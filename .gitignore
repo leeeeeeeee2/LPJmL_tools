@@ -1,0 +1,12 @@
+# ignore default R files
+.RData
+.Rhistory
+
+# ignore job log files
+output_*.txt
+error_output_*.txt
+
+# other files not suitable for version control
+*.pdf
+*.doc
+*.docx
