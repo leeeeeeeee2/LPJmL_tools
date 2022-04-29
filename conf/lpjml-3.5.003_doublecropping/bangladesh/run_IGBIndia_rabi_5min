@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH --account=5240796
+#SBATCH --time=24000
+#SBATCH --mem=64000
+#SBATCH --ntasks=32
+##SBATCH -N 1
+#SBATCH --output=output_%j.txt
+#SBATCH --error=error_output_%j.txt
+#SBATCH --partition=ESG_Low
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=hester.biemans@wur.nl
+ 
+export LPJROOT="/home/WUR/biema005/HIAWARE/lpjml-3.5.003"
+
+
+mpirun "$LPJROOT/bin/lpjml" lpjml_IGBIndia_rabi_5min.conf
+
