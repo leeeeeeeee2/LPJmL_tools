@@ -15,6 +15,8 @@ library(raster)
 library(ncdf4)
 library(chron)
 library(scales) 
+library(ggplot2)
+
 
 rcp8dir <- "/home/danke010/scratch/Bangladesh/output/run_39397929_GFDL_rcp85"
 
@@ -161,6 +163,71 @@ ggplot(prhdf, aes(mon)) +
 # save plot pr_day_GFDL-ESM2M_historical_r1i1p1_EWEMBI_BD_mean_ymonmean_1971-2000.nc
 outfile <- paste(rcp8dir,"plots","pr_day_GFDL-ESM2M_ymonmean_1971-200_rcp85_2070-2099.png",sep="/")
 ggsave(file=outfile, width=6, height=3, dpi=300)
+
+
+##### TEMPERATURE #####
+metdir <- "/home/danke010/scratch/Bangladesh/meteo/isimip2b"
+
+bdfile <- paste(metdir, "tas_day_GFDL-ESM2M_historical_r1i1p1_EWEMBI_BD_mean_yearmean_1950-2099_anom_from_1971-2000.nc", sep="/")
+gbfile <- paste(metdir, "tas_day_GFDL-ESM2M_historical_r1i1p1_EWEMBI_GB_mean_yearmean_1950-2099_anom_from_1971-2000.nc", sep="/")
+
+# get the data
+bdf <- nc_open(bdfile)
+bddata <- ncvar_get(bdf, "tas")
+bddataname <- ncatt_get(bdf, "tas", "long_name") 
+
+tim <- ncvar_get(bdf, "time")
+tunits <- ncatt_get(bdf,"time","units")
+
+# convert time -- split the time units string into fields
+tustr <- strsplit(tunits$value, " ")
+tdstr <- strsplit(unlist(tustr)[3], "-")
+tmonth <- as.integer(unlist(tdstr)[2])
+tday <- as.integer(unlist(tdstr)[3])
+tyear <- as.integer(unlist(tdstr)[1])
+tsteps <- chron(tim,origin=c(tmonth, tday, tyear), out.format=c(dates = "yyyy-m-d", times = "h:m:s"))
+# this is going OK since we are dealing with yearly data (note slight difference in time in leap years)
+# still we can generate a new sequence
+alltsteps <- seq.dates(tsteps[1],by="year", length=dim(tim))
+alldates <- as.Date(alltsteps) # convert to normal date object
+
+# get data for entire model area
+gbf <- nc_open(gbfile)
+gbdata <- ncvar_get(gbf, "tas")
+
+# create dataframe 
+tasdf <- data.frame(date=alldates,temperature_bd=bddata, temperature_gb=gbdata)
+nc_close(bdf)
+nc_close(gbf)
+
+
+ggplot(tasdf, aes(date)) + 
+  #geom_rect(data=NULL,aes(xmin=as.Date("2000-01-01"),xmax=max(myylddf$date),ymin=-Inf,ymax=0.0),
+  #                  fill="darkgrey") +
+  geom_ribbon(aes(ymin=-Inf, ymax=0), alpha=0.25) + 
+  geom_line(aes(y = temperature_bd, group=1, colour = "bd"),size=1.5) + 
+  geom_line(aes(y = temperature_gb, group=2, colour = "gb"),size=1.5) +
+  scale_color_manual(name = "", values = c("bd" = "orange", "gb" = "darkgreen"),
+    labels=c("Bangladesh", "Ganges-Brahmaputra basin")) + 
+  scale_x_date(expand=c(0,0), breaks=seq(as.Date("1970-07-01"), as.Date("2099-07-01"), by="30 years"),
+     labels=date_format("%Y")) +
+  #scale_y_continuous(breaks=seq(-0.6,0.6,0.3), limits=c(-0.6,0.6),
+  #  labels=c("-60", "-30", "avg", "+30", "+60")) + 
+  xlab("Year") + 
+  ylab(expression("Temperature anomaly " (degree*C))) + 
+  ggtitle("Mean annual temperature anomalies (RCP8.5)") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  theme(legend.position = c(0.2, 0.9)) + 
+  theme(legend.background=element_rect(fill = alpha("white", 0.0)))
+
+# tas_day_GFDL-ESM2M_historical_r1i1p1_EWEMBI_BD_mean_yearmean_1950-2099_anom_from_1971-2000.nc
+outfile <- paste(rcp8dir,"plots","tas_day_GFDL-ESM2M_yearmean_1950-2099_anom_from_1971-2000.png",sep="/")
+ggsave(file=outfile, width=6, height=3, dpi=300)
+
+# what is the average anomaly at the end of century?
+summary(myylddf[121:150,])
+
+
 
 
 ##### IRRIGATION #####
