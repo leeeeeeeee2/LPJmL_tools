@@ -134,6 +134,9 @@ cdo -ymonmean -selyear,2071/2100 ${modelname}_${ens}_w5e5_${scen}_${var}_landonl
 cdo -eca_rr1,$thresh1 -selyear,2071/2100 ${modelname}_${ens}_w5e5_${scen}_${var}_landonly_daily_${ys}-${ye}_GB_masked.nc ${modelname}_${ens}_w5e5_${scen}_${var}_landonly_daily_2071-2100_GB_masked_rr1.nc
 cdo -eca_rr1,$thresh5 -selyear,2071/2100 ${modelname}_${ens}_w5e5_${scen}_${var}_landonly_daily_${ys}-${ye}_GB_masked.nc ${modelname}_${ens}_w5e5_${scen}_${var}_landonly_daily_2071-2100_GB_masked_rr5.nc
 
+# select period 2031-2050
+cdo -ymonmean -selyear,2031/2050 ${modelname}_${ens}_w5e5_${scen}_${var}_landonly_daily_${ys}-${ye}_BD_mean.nc ${modelname}_${ens}_w5e5_${scen}_${var}_landonly_daily_2031-2050_BD_mean_ymonmean.nc
+
 
 # precipitation anomalies
 # note values symmetrical around zero, 0.5 = +50% etc.
