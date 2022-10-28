@@ -27,9 +27,9 @@ for myfile in ${allfiles}; do
   echo ${myfile}; 
 
   # merge files from hist run
-  cdo mergetime ${histdir}/1951/${myfile} ${histdir}/1961/${myfile} ${histdir}/1971/${myfile} ${histdir}/1981/${myfile} ${histdir}/1991/${myfile} ${histdir}/2001/${myfile} ${histdir}/2011/${myfile} ${histdir}/${myfile}
+  cdo -O mergetime ${histdir}/1951/${myfile} ${histdir}/1961/${myfile} ${histdir}/1971/${myfile} ${histdir}/1981/${myfile} ${histdir}/1991/${myfile} ${histdir}/2001/${myfile} ${histdir}/2011/${myfile} ${histdir}/${myfile}
 
   # merge files from SSP run
-  cdo mergetime ${sspdir}/2015/${myfile} ${sspdir}/2021/${myfile} ${sspdir}/2031/${myfile} ${sspdir}/2041/${myfile} ${sspdir}/2051/${myfile} ${sspdir}/2061/${myfile} ${sspdir}/2071/${myfile} ${sspdir}/2081/${myfile} ${sspdir}/2091/${myfile} ${sspdir}/${myfile}  
+  cdo -O mergetime ${sspdir}/2015/${myfile} ${sspdir}/2021/${myfile} ${sspdir}/2031/${myfile} ${sspdir}/2041/${myfile} ${sspdir}/2051/${myfile} ${sspdir}/2061/${myfile} ${sspdir}/2071/${myfile} ${sspdir}/2081/${myfile} ${sspdir}/2091/${myfile} ${sspdir}/${myfile}  
 
 done
