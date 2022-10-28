@@ -12,7 +12,11 @@ bdmask='/home/danke010/scratch/Bangladesh/bangladesh.nc'
 
 ########## MRI HISTORICAL RUN ##########
 
-histdir='/home/danke010/scratch/Bangladesh/output/igbmasked_mri-esm2-0_hist/'
+#histdir='/home/danke010/scratch/Bangladesh/output/igbmasked_mri-esm2-0_hist/'
+#histdir='/home/danke010/scratch/Bangladesh/output/igbmasked_ukesm1-0-ll_hist/'
+#histdir='/home/danke010/scratch/Bangladesh/output/igbmasked_ipsl-cm6a-lr_hist/'
+#histdir='/home/danke010/scratch/Bangladesh/output/igbmasked_mpi-esm1-2-hr_hist/'
+histdir='/home/danke010/scratch/Bangladesh/output/igbmasked_gfdl-esm4_hist/'
 cd $histdir
 
 # calculate areal averages of monthly water balance
@@ -78,7 +82,11 @@ cdo timmean -selyear,1981/2010 -ifthen $bdmask mirrig.nc mirrig_bd_masked_1981-2
 
 ########## MRI SSP585 RUN ##########
 
-rcp8dir='/home/danke010/scratch/Bangladesh/output/igbmasked_mri-esm2-0_ssp585'
+#rcp8dir='/home/danke010/scratch/Bangladesh/output/igbmasked_mri-esm2-0_ssp585'
+#rcp8dir='/home/danke010/scratch/Bangladesh/output/igbmasked_ukesm1-0-ll_ssp585'
+#rcp8dir='/home/danke010/scratch/Bangladesh/output/igbmasked_ipsl-cm6a-lr_ssp585'
+#rcp8dir='/home/danke010/scratch/Bangladesh/output/igbmasked_mpi-esm1-2-hr_ssp585'
+rcp8dir='/home/danke010/scratch/Bangladesh/output/igbmasked_gfdl-esm4_ssp585'
 cd $rcp8dir
 
 # calculate areal averages of monthly water balance
@@ -110,6 +118,9 @@ cdo div -yearavg mirrig_bd_fldmean.nc $histdir/mirrig_bd_1981-2010_timmean.nc mi
 cdo fldmean -ifthen $bdmask pft_harvest.grid.bin pft_harvest_bd.nc
 # relative to historical run
 cdo div pft_harvest_bd.nc $histdir/pft_harvest_bd_1981-2010_timmean.nc pft_harvest_bd_ssp8_div_hist.nc
+# display average change in 2035-2064
+cdo infon -timmean -selyear,2036/2065 pft_harvest_bd_ssp8_div_hist.nc
+
 
 # extract river discharge at suitable point
 # lat/lon from QGIS
@@ -122,3 +133,4 @@ cdo div -yearmean mdischarge_ganges_in.nc $histdir/mdischarge_ganges_in_1981-201
 # spatial patterns
 cdo timmean -selyear,2071/2100 -ifthen $bdmask mirrig.nc mirrig_bd_masked_2071-2100_timmean.nc
 cdo div mirrig_bd_masked_2071-2100_timmean.nc $histdir/mirrig_bd_masked_1981-2010_timmean.nc mirrig_bd_masked_2071-2100_ssp8_div_hist.nc
+
